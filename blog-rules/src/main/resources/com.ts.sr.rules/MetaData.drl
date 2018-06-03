@@ -1,0 +1,20 @@
+package com.ts.blog.rules
+
+/**
+* TechSquids blog model declaration
+* position annotation is optional
+*/
+declare Blog
+
+   @author( Rahul )
+   @dateOfCreation( 02-June-2018 )
+
+   //Adding annotation to avoid infinite loop execution when any property is updated
+   @propertyReactive
+   topic : String @position(1)
+   likes : Integer @position(2)
+   time : java.util.Date @position(3)
+   category : String @position(4)
+   visits : Integer @position(5)
+   rating : Integer @position(6)
+end

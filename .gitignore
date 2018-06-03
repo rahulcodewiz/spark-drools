@@ -50,3 +50,4 @@ buildNumber.properties
 hs_err_pid*
 .gitignore
 .idea/
+rules/rules.iml
