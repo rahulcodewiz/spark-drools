@@ -6,5 +6,5 @@ package com.ts.blog.rules.type;
  * @since 1.0
  */
 public enum Category {
-
+    NOTABLE,BRONZE, SILVER, GOLD, PLATINUM, POPULAR, PIONEER, CLEANUP
 }

@@ -1,9 +1,12 @@
-package com.ts.blog.rules
+package com.ts.blog.kie
+
+import com.ts.blog.rules.type.Category
 
 /**
 * TechSquids blog model declaration
 * position annotation is optional
 */
+
 declare Blog
 
    @author( Rahul )
@@ -11,10 +14,11 @@ declare Blog
 
    //Adding annotation to avoid infinite loop execution when any property is updated
    @propertyReactive
-   topic : String @position(1)
-   likes : Integer @position(2)
-   time : java.util.Date @position(3)
-   category : String @position(4)
-   visits : Integer @position(5)
-   rating : Integer @position(6)
+   topic : String
+   subtopic:String
+   likes : Integer
+   time : java.util.Date
+   category : Category
+   visits : Integer
+   rating : Integer
 end

@@ -1,0 +1,12 @@
+<kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://jboss.org/kie/6.0.0/kmodule">
+
+    <kbase name="defaultKB" default="true" eventProcessingMode="cloud" equalsBehavior="equality" declarativeAgenda="enabled"
+           packages="com.ts.blog.kie">
+
+        <ksession name="defStatefulKS" type="stateful" default="true"/>
+
+        <ksession name="defStatelessKS" type="stateless" default="false" beliefSystem="jtms"/>
+
+    </kbase>
+</kmodule>
