@@ -9,9 +9,7 @@ global Logger LOGGER
 
 rule "cat_top1000"
      salience 1000
-     agenda-group "java_ag"
      no-loop true
-     activation-group "java_ac"
      dialect "java"
 when
     $blog : Blog( dateCompare(time,"2010") == true )
@@ -23,9 +21,7 @@ end
 
 rule "cat_top1"
      salience 100
-     agenda-group "java_ag"
      no-loop true
-     activation-group "java_ac"
      dialect "java"
 when
     $blog : Blog ( likes > 100 && topic.equals("java") )
@@ -36,9 +32,7 @@ end
 
 rule "cat_top2"
      salience 101
-     agenda-group "java_ag"
      no-loop true
-     activation-group "java_ac"
      dialect "java"
 when
     $blog : Blog( likes > 200 && topic.equals("java") )
@@ -49,12 +43,10 @@ end
 
 rule "cat_top3"
      salience 102
-     agenda-group "java_ag"
      no-loop true
-     activation-group "java_ac"
      dialect "java"
 when
-    $blog : Blog( likes > 300 && topic.equals("java") )
+    $blog : Blog( likes > 100 && topic.equals("unix") )
 then
     LOGGER.info("cat_top obj:{}",$blog);
     modify( $blog ){setCategory(Category.GOLD)};
@@ -62,35 +54,19 @@ end
 
 rule "cat_top4"
      salience 103
-     agenda-group "java_ag"
      no-loop true
-     activation-group "java_ac"
      dialect "java"
 when
-    $blog : Blog( likes > 400 && topic.equals("java") )
+    $blog : Blog( likes > 400 && likes < 600 && subtopic.equals("unix") || topic.equals("unix") )
 then
     LOGGER.info("cat_top obj:{}",$blog);
     modify( $blog ){setCategory(Category.GOLD)};
 end
 
-rule "cat_top5"
-     salience 1
-     agenda-group "unix_ag"
-     no-loop true
-     activation-group "unix_ac"
-     dialect "java"
-when
-    $blog : Blog( likes > 400 && topic.equals("unix") )
-then
-    LOGGER.info("cat_top obj:{}",$blog);
-    modify( $blog ){setCategory(Category.POPULAR)};
-end
 
 rule "cat_top6"
      salience 1
-     agenda-group "unix_ag"
      no-loop true
-     activation-group "unix_ac"
      dialect "java"
 when
     $blog : Blog( likes > 600 && topic.equals("unix") )

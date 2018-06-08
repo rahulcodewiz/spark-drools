@@ -18,7 +18,7 @@ declare Blog
    subtopic:String
    likes : Integer
    time : java.util.Date
-   category : Category
    visits : Integer
+   category : Category
    rating : Integer
 end

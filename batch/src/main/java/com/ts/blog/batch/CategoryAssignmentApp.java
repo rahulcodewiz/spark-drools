@@ -8,6 +8,9 @@ import org.apache.logging.log4j.Logger;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.types.StructField;
+import org.apache.spark.sql.types.StructType;
+import org.apache.spark.status.api.v1.SimpleDateParam;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -16,7 +19,9 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 
@@ -51,7 +56,7 @@ public class CategoryAssignmentApp {
                 throw new RuntimeException("Kie Fact not found: com.ts.blog.kie.Blog ");
             }
             List<FactField> blogField = type.getFields();
-            System.out.println(blogField);
+            //System.out.println(blogField);
             List output = new ArrayList();
             //Iterate through each record and assign category
             while(rowIte.hasNext()){
@@ -59,10 +64,22 @@ public class CategoryAssignmentApp {
                 Object blog = type.newInstance();
                 blogField.forEach(field->{
                     try {
-                        String value = row.getString(field.getIndex());
-                        type.set(blog, field.getName(), value);
+                        if( field.getIndex()<row.size()) {
+                            String value = row.getString(field.getIndex());
+                            Object finalVal = null;
+                            if (field.getType().equals(Date.class)) {
+                                finalVal = new SimpleDateFormat("MM/dd/yyyy").parse(value);
+                            } else if (field.getType().equals(Integer.class)) {
+                                finalVal = Integer.valueOf(value);
+                            } else {
+                                finalVal = value;
+                            }
+                            if (finalVal != null) {
+                                type.set(blog, field.getName(), finalVal);
+                            }
+                        }
                     }catch (Exception e){
-
+                        e.printStackTrace();
                     }
                 });
 
@@ -70,7 +87,6 @@ public class CategoryAssignmentApp {
 
                 kieSession.insert(blog);
                 kieSession.setGlobal("LOGGER",LOGGER);
-                //kieSession.getAgenda().getAgendaGroup((String)row.getAs("topic")).setFocus();
                 kieSession.fireAllRules();
                 kieSession.dispose();
                 output.add(blog);
