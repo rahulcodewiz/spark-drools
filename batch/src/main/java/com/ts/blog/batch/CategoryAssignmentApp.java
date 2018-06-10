@@ -3,26 +3,11 @@ package com.ts.blog.batch;
 import com.google.devtools.common.options.Option;
 import com.google.devtools.common.options.OptionsBase;
 import com.google.devtools.common.options.OptionsParser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.ts.blog.batch.functions.CategoryAssignment;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
-import org.apache.spark.sql.types.StructField;
-import org.apache.spark.sql.types.StructType;
-import org.apache.spark.status.api.v1.SimpleDateParam;
-import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.KieServices;
-import org.kie.api.definition.type.FactField;
-import org.kie.api.definition.type.FactType;
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -36,67 +21,27 @@ public class CategoryAssignmentApp {
         SparkSession session = SparkSession.builder().master("local[*]").appName("CategoryAssignmentApp").
                 getOrCreate();
 
-        Options options = Options.argsParser.apply(args);
-
-        Dataset<Row> ds = session.read().option("header","true").csv(options.input);
-        ds.show();
-        ds.javaRDD().mapPartitions(rowIte->{
-            //Initlized kie base
-            Logger LOGGER = LogManager.getLogger(CategoryAssignmentApp.class);
-            KieServices kieServices=KieServices.Factory.get();
-            KieContainer kieContainer =kieServices.newKieClasspathContainer();
-            KieBaseConfiguration config = kieServices.newKieBaseConfiguration();
-            KieBase kieBase =  kieContainer.newKieBase(config);
+        //Parse supplied arguments
+        Options options = new Options().argsParser.apply(args);
 
 
-            //Get Blog type from kie base
+        //Read CSV file using input arguments
+        Dataset<Row> ds = session.read().option("header", "true").csv(options.input);
+        //See csv content
+        ds.show(20);
 
-            FactType type = kieBase.getFactType("com.ts.blog.kie","Blog");
-            if(type == null){
-                throw new RuntimeException("Kie Fact not found: com.ts.blog.kie.Blog ");
-            }
-            List<FactField> blogField = type.getFields();
-            //System.out.println(blogField);
-            List output = new ArrayList();
-            //Iterate through each record and assign category
-            while(rowIte.hasNext()){
-               Row row =  rowIte.next();
-                Object blog = type.newInstance();
-                blogField.forEach(field->{
-                    try {
-                        if( field.getIndex()<row.size()) {
-                            String value = row.getString(field.getIndex());
-                            Object finalVal = null;
-                            if (field.getType().equals(Date.class)) {
-                                finalVal = new SimpleDateFormat("MM/dd/yyyy").parse(value);
-                            } else if (field.getType().equals(Integer.class)) {
-                                finalVal = Integer.valueOf(value);
-                            } else {
-                                finalVal = value;
-                            }
-                            if (finalVal != null) {
-                                type.set(blog, field.getName(), finalVal);
-                            }
-                        }
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                });
+        //convert dataset to javaRDD and use mapPartition to process each record using kie api and assign Category
+        //Use mapPartitions function to process entire partition records, to avoid loading kie rules again and again for each record.
 
-                KieSession kieSession = kieBase.newKieSession();
-
-                kieSession.insert(blog);
-                kieSession.setGlobal("LOGGER",LOGGER);
-                kieSession.fireAllRules();
-                kieSession.dispose();
-                output.add(blog);
-            }
-            return output.iterator();
-        }).collect().forEach(e->System.out.println(e));
+        ds.javaRDD().mapPartitions(new CategoryAssignment("com.ts.blog.kie", "Blog"))
+                //Use save instead of collect if you have too many records.
+                .collect().forEach(s-> System.out.println(s));
     }
 
 
-
+    /**
+     * Options class to parse input arguments
+     */
     public static class Options extends OptionsBase{
         public static OptionsParser parser = OptionsParser.newOptionsParser(Options.class);
 
@@ -108,6 +53,7 @@ public class CategoryAssignmentApp {
         @Option(
                 name="help",
                 abbrev = 'h',
+                category = "Startup",
                 help = "Print usage info",
                 defaultValue = "true"
 
@@ -118,8 +64,9 @@ public class CategoryAssignmentApp {
         @Option(
                 name="input",
                 abbrev = 'i',
-                help = "Print usage info",
-                defaultValue = "true"
+                category = "Startup",
+                help = "input path",
+                defaultValue = ""
 
         )
         public String input;
@@ -127,8 +74,9 @@ public class CategoryAssignmentApp {
         @Option(
                 name="output",
                 abbrev = 'o',
-                help = "Print usage info",
-                defaultValue = "true"
+                help = "output path",
+                category = "Startup",
+                defaultValue = ""
 
         )
         public String output;
