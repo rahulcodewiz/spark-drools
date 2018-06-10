@@ -4,8 +4,8 @@ spark-drools tutorials
 The spark drools tutorial contains majorly 2 maven modules, 
 the rules-core module defines all the rules and batch modules contains Spark Application to execute the Drools rule.
 
-## **rules-core**- drools rules
-## **batch**- Spark application using java
+### **rules-core**- [drools rules](https://github.com/rahulsquid/spark-drools/tree/master/rules-core)
+### **batch**- [Spark application using java](https://github.com/rahulsquid/spark-drools/tree/master/batch)
 
 ## Following are the major points covered in examples:
 *   **How to build kie jar using maven project**- rules-core modules
