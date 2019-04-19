@@ -20,14 +20,14 @@ the rules-core module defines all the rules and batch modules contains Spark App
 
 ## Batch module launcher example
 
-<batch Zip Home>/bin/launcher.sh --help
-Options category 'Startup':
-  --[no]help [-h] (a boolean; default: "true")
-    Print usage info
-  --input [-i] (a string; default: "")
-    input path
-  --output [-o] (a string; default: "")
-    output path
+    <batch Zip Home>/bin/launcher.sh --help
+    Options category 'Startup':
+      --[no]help [-h] (a boolean; default: "true")
+        Print usage info
+      --input [-i] (a string; default: "")
+        input path
+      --output [-o] (a string; default: "")
+        output path
 
 
 ## You may use input-data directory for test run
