@@ -11,6 +11,7 @@ import org.apache.spark.sql.SparkSession;
 import java.util.function.Function;
 
 /**
+ * This Spark App shows how to connect run Kie rules as a part of Spark
  * @author Rahul
  * @since 1.0
  *
