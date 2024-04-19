@@ -2,15 +2,20 @@
 ![Apache Spark](img/spark_java_drools_maven.jpg)
 
 
-While working on one of the business rules integration project in Spark I realized there are many moving components and it takes a while to setup the whole project structure in Spark, e.g. Project Build setup, Kie Rules & resource structure, Spark App, and Kie App et al. I attempt to share the learnings in this guide.
+While working on a business rules integration project in Spark, I encountered various challenges in setting up the project structure efficiently. This includes bundling the project artifact, creating a launcher script, defining the Spark-submit script with classpath, establishing the Kie Rules and resource structure, and linking the business rules with the Spark app. In this guide, I aim to share the insights and strategies I've learned along the way.
 
-There are two maven modules, Keeping it separate so rules can be changed independently in runtime. 
+There are two maven modules, Keeping it separate so rules can be changed independently in runtime: 
 
 - **Rules-core**- [drools rules](https://github.com/rahulsquid/spark-drools/tree/master/rules-core)
 - **Batch**- [Spark application](https://github.com/rahulsquid/spark-drools/tree/master/batch)
 
 ### Following are the major points covered in examples:
 
+-   **Build Process and Launcher Module** :
+
+  We use Maven for the entire build and artifact creation. Checkout the Assembly file in batch module to learn more about how to define the launcher script and bundle it into the artifact.
+
+            
 -   **How to build kie jar using maven project**-
 
             rules-core modules
@@ -50,4 +55,6 @@ There are two maven modules, Keeping it separate so rules can be changed indepen
 
 ## References:
 
-- [Kie Drools](https://docs.jboss.org/drools/release/5.2.0.Final/drools-expert-docs/html/ch05.html)
+- [Kie Drools](https://www.drools.org/)
+- [Apache Spark](https://spark.apache.org/)
+- [Apache Maven](https://maven.apache.org/)
