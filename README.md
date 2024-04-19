@@ -13,7 +13,7 @@ There are two maven modules, Keeping it separate so rules can be changed indepen
 
 -   **Build Process and Launcher Module** :
 
-  We use Maven for the entire build and artifact creation. Checkout the Assembly file in batch module to learn more about how to define the launcher script and bundle it into the artifact.
+  We use Maven for the entire build and artifact creation. Checkout the [Assembly](batch/src/main/assembly) and [Binary](batch/src/main/bin) in batch module to learn more about how to define the launcher script and bundle it into the artifact.
 
             
 -   **How to build kie jar using maven project**-
